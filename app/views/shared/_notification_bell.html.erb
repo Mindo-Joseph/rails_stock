@@ -1,0 +1,12 @@
+<div class="fixed top-4 right-4" data-controller="notification">
+  <div class="relative">
+    <%= link_to notifications_path, class: "text-gray-600 hover:text-gray-900" do %>
+      <i class="fas fa-bell text-xl"></i>
+      <% if Notification.unread.exists? %>
+        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          <%= Notification.unread.count %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+</div>

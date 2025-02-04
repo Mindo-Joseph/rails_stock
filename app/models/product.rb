@@ -13,6 +13,9 @@ class Product < ApplicationRecord
   scope :low_stock, -> { where('quantity <= low_stock_threshold') }
   scope :in_stock, -> { where('quantity > 0') }
   scope :out_of_stock, -> { where(quantity: 0) }
+  has_many :notifications, dependent: :destroy
+
+  after_update :check_stock_level
 
   def low_stock?
     quantity <= low_stock_threshold
@@ -24,5 +27,17 @@ class Product < ApplicationRecord
 
   def sku=(value)
     super(value.to_s.upcase)
+  end
+
+  private
+
+  def check_stock_level
+    if saved_change_to_quantity? && quantity <= low_stock_threshold
+      notifications.create(
+        title: "Low Stock Alert",
+        message: "#{name} is running low on stock (#{quantity} remaining)",
+        status: :unread
+      )
+    end
   end
 end
