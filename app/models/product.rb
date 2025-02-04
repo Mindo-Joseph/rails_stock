@@ -13,6 +13,22 @@ class Product < ApplicationRecord
   scope :low_stock, -> { where('quantity <= low_stock_threshold') }
   scope :in_stock, -> { where('quantity > 0') }
   scope :out_of_stock, -> { where(quantity: 0) }
+  scope :search, ->(query) {
+    where("name ILIKE ? OR sku ILIKE ?", "%#{query}%", "%#{query}%")
+  }
+
+  scope :by_stock_status, ->(status) {
+    case status
+    when 'low_stock'
+      where('quantity <= low_stock_threshold')
+    when 'in_stock'
+      where('quantity > low_stock_threshold')
+    when 'out_of_stock'
+      where(quantity: 0)
+    else
+      all
+    end
+  }
   has_many :notifications, dependent: :destroy
 
   after_update :check_stock_level

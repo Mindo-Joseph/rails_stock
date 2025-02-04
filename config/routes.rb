@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   get 'notifications/mark_as_read'
   devise_for :users
 
-  resources :products
+  resources :products do
+    collection do
+      get :export
+    end
+  end
   resources :notifications, only: [:index] do
     member do
       post :mark_as_read

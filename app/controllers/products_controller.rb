@@ -4,7 +4,10 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   def index
-    @products = Product.order(created_at: :desc)
+  @products = Product.all
+  @products = @products.search(params[:query]) if params[:query].present?
+  @products = @products.by_stock_status(params[:status]) if params[:status].present?
+  @products = @products.order(created_at: :desc)
   end
 
   def show
@@ -31,6 +34,43 @@ class ProductsController < ApplicationController
   def edit
   end
 
+  def export
+    @products = Product.order(created_at: :desc)
+
+    respond_to do |format|
+      format.csv do
+        send_data generate_csv(@products),
+          filename: "inventory-#{Date.current}.csv",
+          type: 'text/csv'
+      end
+      format.xlsx do
+        send_data generate_xlsx(@products),
+          filename: "inventory-#{Date.current}.xlsx",
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      end
+    end
+
+  def generate_csv(products)
+    headers = ['Name', 'SKU', 'Description', 'Price', 'Quantity', 'Low Stock Threshold', 'Status', 'Created At']
+
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      products.each do |product|
+        csv << [
+          product.name,
+          product.sku,
+          product.description,
+          format_price(product.price),
+          product.quantity,
+          product.low_stock_threshold,
+          stock_status_label(product),
+          product.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        ]
+      end
+    end
+  end
+
  def update
     if @product.update(product_params)
       flash[:notice] = "Product was successfully updated."
@@ -42,6 +82,31 @@ class ProductsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
  end
+
+ def generate_xlsx(products)
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Inventory") do |sheet|
+      sheet.add_row ['Name', 'SKU', 'Description', 'Price', 'Quantity', 'Low Stock Threshold', 'Status', 'Created At']
+
+      products.each do |product|
+        sheet.add_row [
+          product.name,
+          product.sku,
+          product.description,
+          format_price(product.price),
+          product.quantity,
+          product.low_stock_threshold,
+          stock_status_label(product),
+          product.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        ]
+      end
+    end
+
+    package.to_stream.read
+  end
+
 
   def destroy
     @product.destroy

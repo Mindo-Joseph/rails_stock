@@ -18,7 +18,8 @@ gem "turbo-rails"
 gem "jbuilder"
 gem "jsbundling-rails"
 gem "cssbundling-rails"
-
+gem "caxlsx"
+gem "caxlsx_rails"
 # Authentication and Authorization
 gem "devise"
 gem "pundit"
