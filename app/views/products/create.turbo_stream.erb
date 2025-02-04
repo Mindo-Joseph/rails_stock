@@ -1,0 +1,5 @@
+<%= turbo_stream.prepend "products" do %>
+  <%= render @product %>
+<% end %>
+
+<%= turbo_stream.update "new_product", "" %>

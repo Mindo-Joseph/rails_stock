@@ -1,4 +1,27 @@
-<div>
-  <h1 class="font-bold text-4xl">Products#index</h1>
-  <p>Find me in app/views/products/index.html.erb</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Inventory Management</h1>
+    <%= link_to new_product_path,
+        class: "inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors duration-200 shadow-sm",
+        data: { turbo_frame: "new_product" } do %>
+      <i class="fas fa-plus mr-2"></i>
+      Add New Product
+    <% end %>
+  </div>
+
+  <%= turbo_frame_tag "new_product" %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <%= render @products %>
+  </div>
+
+  <% if @products.empty? %>
+    <div class="text-center py-12">
+      <div class="text-gray-400">
+        <i class="fas fa-box fa-3x mb-4"></i>
+        <p class="text-xl">No products found</p>
+        <p class="text-sm mt-2">Start by adding some products to your inventory</p>
+      </div>
+    </div>
+  <% end %>
 </div>

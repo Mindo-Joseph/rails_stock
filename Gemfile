@@ -9,12 +9,15 @@ gem "sprockets-rails"
 gem "bootsnap", require: false
 gem "pg", "~> 1.1"
 gem "puma", "~> 6.0"
+gem "importmap-rails"
 
 # Asset pipeline and frontend
 gem "tailwindcss-rails"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "jbuilder"
+gem "jsbundling-rails"
+gem "cssbundling-rails"
 
 # Authentication and Authorization
 gem "devise"

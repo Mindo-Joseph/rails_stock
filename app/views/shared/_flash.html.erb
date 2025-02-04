@@ -1,0 +1,21 @@
+<% flash.each do |type, message| %>
+  <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+       data-controller="flash"
+       data-flash-target="message"
+       data-flash-hide-after-value="3000">
+    <div class="<%= type == 'notice' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %> px-4 py-3 rounded-lg shadow-md">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <% if type == 'notice' %>
+            <i class="fas fa-check-circle"></i>
+          <% else %>
+            <i class="fas fa-exclamation-circle"></i>
+          <% end %>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium"><%= message %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

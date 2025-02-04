@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>RailsStock</title>
+    <title>Inventory Management</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-50">
+    <div class="min-h-screen">
+      <%= render "shared/flash" if defined?(flash) %>
+      <div class="py-10">
+        <main>
+          <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <%= yield %>
+          </div>
+        </main>
+      </div>
+    </div>
   </body>
 </html>

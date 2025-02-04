@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  include Turbo::Streams::Broadcasts
+
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -17,9 +19,11 @@ class ProductsController < ApplicationController
 
     if @product.save
       flash[:notice] = "Product was successfully created."
-      redirect_to @product
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to @product }
+      end
     else
-      flash.now[:alert] = "Error creating product."
       render :new, status: :unprocessable_entity
     end
   end
@@ -27,20 +31,24 @@ class ProductsController < ApplicationController
   def edit
   end
 
-  def update
+ def update
     if @product.update(product_params)
       flash[:notice] = "Product was successfully updated."
-      redirect_to @product
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to @product }
+      end
     else
-      flash.now[:alert] = "Error updating product."
       render :edit, status: :unprocessable_entity
     end
-  end
+ end
 
   def destroy
     @product.destroy
-    flash[:notice] = "Product was successfully deleted."
-    redirect_to products_url, status: :see_other
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@product) }
+      format.html { redirect_to products_url, notice: "Product was successfully deleted." }
+    end
   end
 
   private
