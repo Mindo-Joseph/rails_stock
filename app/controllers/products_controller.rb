@@ -47,16 +47,25 @@ end
   end
 
   def update
-    if @product.update(product_params)
-      flash[:notice] = "Product was successfully updated."
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to @product }
+  original_quantity = @product.quantity
+  if @product.update(product_params)
+    flash[:notice] = "Product was successfully updated."
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.replace(@product),
+          turbo_stream.replace("notification_count",
+            partial: "shared/notification_count",
+            locals: { count: Notification.unread.count }
+          )
+        ]
       end
-    else
-      render :edit, status: :unprocessable_entity
+      format.html { redirect_to @product }
     end
+  else
+    render :edit, status: :unprocessable_entity
   end
+end
 
   def destroy
     @product.destroy
@@ -86,16 +95,10 @@ end
   def close_edit
   @product = Product.find(params[:id])
   respond_to do |format|
-    format.turbo_stream {
-      render turbo_stream: turbo_stream.replace(
-        dom_id(@product),
-        partial: "products/product",
-        locals: { product: @product }
-      )
-    }
-    format.html { redirect_to @product }
+    format.turbo_stream
+    format.html { redirect_to products_url }
   end
-end
+ end
 
   private
 

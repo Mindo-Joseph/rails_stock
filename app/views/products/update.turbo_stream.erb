@@ -1,11 +1,9 @@
-<%= turbo_stream.update "notification_count" do %>
-  <% if Notification.unread.exists? %>
-    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-      <%= Notification.unread.count %>
-    </span>
-  <% end %>
-<% end %>
-
 <%= turbo_stream.replace dom_id(@product) do %>
   <%= render @product %>
+<% end %>
+
+<% if Notification.unread.exists? %>
+  <%= turbo_stream.replace "notification_count" do %>
+    <%= render "shared/notification_count", count: Notification.unread.count %>
+  <% end %>
 <% end %>
