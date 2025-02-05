@@ -13,6 +13,7 @@ gem "importmap-rails"
 
 # Asset pipeline and frontend
 gem "tailwindcss-rails"
+gem "rails-controller-testing"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "jbuilder"
@@ -46,5 +47,6 @@ end
 
 group :test do
   gem "capybara"
+  gem "shoulda-matchers"
   gem "selenium-webdriver"
 end

@@ -12,6 +12,7 @@
 
   <body class="bg-gray-50">
     <div class="min-h-screen">
+      <%= render "shared/notification_bell" %>
       <%= render "shared/flash" if defined?(flash) %>
       <div class="py-10">
         <main>
@@ -22,7 +23,4 @@
       </div>
     </div>
   </body>
-  <div class="relative">
-  <%= render "shared/notification_bell" %>
-</div>
 </html>
