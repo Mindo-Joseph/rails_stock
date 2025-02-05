@@ -13,6 +13,24 @@
   <body class="bg-gray-100">
     <div id="flash-messages"></div>
     <div class="min-h-screen">
+      <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div class="flex justify-between items-center">
+            <%= link_to root_path, class: "flex items-center space-x-2 text-gray-900 hover:text-gray-700" do %>
+              <i class="fas fa-home"></i>
+              <span class="font-semibold">Home</span>
+            <% end %>
+
+            <% unless current_page?(root_path) %>
+              <%= link_to :back, class: "flex items-center space-x-2 text-gray-600 hover:text-gray-900" do %>
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </nav>
+
       <%= render "shared/notification_bell" %>
       <div class="py-10">
         <main>
