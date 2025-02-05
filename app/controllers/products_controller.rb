@@ -47,12 +47,31 @@ end
   end
 
  def update
-  original_quantity = @product.quantity
-  if @product.update(product_params)
+  quantity_to_sell = params[:quantity_to_sell].to_i
+
+  if quantity_to_sell > @product.quantity
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.append("flash-messages",
+          partial: "shared/flash_message",
+          locals: { type: "alert", message: "Cannot sell more than available stock" }
+        )
+      end
+      format.html { redirect_to products_url, alert: "Cannot sell more than available stock" }
+    end
+    return
+  end
+
+  new_quantity = @product.quantity - quantity_to_sell
+
+  if @product.update(quantity: new_quantity)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.append("flash-messages", partial: "shared/flash_message", locals: { type: "notice", message: "Product was successfully updated." }),
+          turbo_stream.append("flash-messages",
+            partial: "shared/flash_message",
+            locals: { type: "notice", message: "Successfully sold #{quantity_to_sell} units" }
+          ),
           turbo_stream.replace(@product),
           turbo_stream.replace("notification_count",
             partial: "shared/notification_count",
@@ -60,7 +79,7 @@ end
           )
         ]
       end
-      format.html { redirect_to @product, notice: "Product was successfully updated." }
+      format.html { redirect_to @product, notice: "Successfully sold #{quantity_to_sell} units" }
     end
   else
     render :edit, status: :unprocessable_entity

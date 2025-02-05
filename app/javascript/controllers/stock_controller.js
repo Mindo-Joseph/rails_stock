@@ -24,4 +24,18 @@ export default class extends Controller {
     const status = quantity <= this.thresholdValue ? "low-stock" : "in-stock"
     this.element.setAttribute("data-status", status)
   }
+  validateQuantity(event) {
+    const input = event.target
+    const currentStock = parseInt(input.dataset.currentStock)
+    const quantityToSell = parseInt(input.value)
+
+    if (quantityToSell > currentStock) {
+      alert(`Cannot sell more than current stock (${currentStock} units)`)
+      input.value = currentStock
+    }
+
+    if (quantityToSell < 1) {
+      input.value = 1
+    }
+  }
 }
