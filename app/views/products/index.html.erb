@@ -1,4 +1,5 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <%# Header Section %>
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Inventory Management</h1>
     <%= link_to new_product_path,
@@ -9,7 +10,7 @@
     <% end %>
   </div>
 
-  <!-- Search and Filter Section -->
+  <%# Search and Filter Section %>
   <div class="mb-6">
     <%= form_with(url: products_path, method: :get, data: { turbo_frame: "products", turbo_action: "advance" },
                   class: "flex flex-col sm:flex-row gap-4") do |f| %>
@@ -35,28 +36,33 @@
       <%= f.submit "Search", class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
     <% end %>
   </div>
+
+  <%# Export Section %>
   <div class="mb-6 flex justify-end space-x-4">
-  <div class="flex items-center text-sm text-gray-600">
-    Export as:
-    <%= link_to export_products_path(format: :csv), class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
-      <i class="fas fa-file-csv mr-2"></i> CSV
-    <% end %>
+    <div class="flex items-center text-sm text-gray-600">
+      Export as:
+      <%= link_to export_products_path(format: :csv),
+          class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
+        <i class="fas fa-file-csv mr-2"></i> CSV
+      <% end %>
 
-    <%= link_to export_products_path(format: :xlsx), class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
-      <i class="fas fa-file-excel mr-2"></i> Excel
-    <% end %>
+      <%= link_to export_products_path(format: :xlsx),
+          class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
+        <i class="fas fa-file-excel mr-2"></i> Excel
+      <% end %>
+    </div>
   </div>
-</div>
 
-  <%= turbo_frame_tag "new_product" %>
+  <div class="w-full flex flex-wrap gap-6">
+    <%# New Product Form Frame %>
+    <%= turbo_frame_tag "new_product", class: "w-full" %>
 
-  <!-- Products Grid -->
-  <%= turbo_frame_tag "products" do %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <%# Products List Frame %>
+    <%= turbo_frame_tag "products", class: "flex flex-wrap gap-6 flex-1" do %>
       <% if @products.any? %>
         <%= render @products %>
       <% else %>
-        <div class="col-span-full text-center py-12">
+        <div class="w-full text-center py-12">
           <div class="text-gray-400">
             <i class="fas fa-box fa-3x mb-4"></i>
             <% if params[:query].present? || params[:status].present? %>
@@ -69,10 +75,10 @@
           </div>
         </div>
       <% end %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 
-  <!-- Stats Section -->
+  <%# Stats Section %>
   <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
     <div class="bg-white rounded-lg shadow p-4">
       <h3 class="text-sm font-medium text-gray-500">Total Products</h3>

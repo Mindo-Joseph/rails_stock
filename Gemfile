@@ -12,7 +12,7 @@ gem "puma", "~> 6.0"
 gem "importmap-rails"
 
 # Asset pipeline and frontend
-gem "tailwindcss-rails"
+gem "tailwindcss-rails", "~> 2.3.0"
 gem "rails-controller-testing"
 gem "stimulus-rails"
 gem "turbo-rails"
@@ -50,3 +50,5 @@ group :test do
   gem "shoulda-matchers"
   gem "selenium-webdriver"
 end
+
+gem "tailwindcss-ruby", "~> 4.0"

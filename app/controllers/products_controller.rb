@@ -14,25 +14,34 @@ class ProductsController < ApplicationController
   end
 
   def show
+  respond_to do |format|
+    format.html
+    format.turbo_stream { render @product }
   end
+end
 
   def new
     @product = Product.new
   end
 
   def create
-    @product = Product.new(product_params)
+  @product = Product.new(product_params)
 
-    if @product.save
-      flash[:notice] = "Product was successfully created."
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to @product }
+  if @product.save
+    flash[:notice] = "Product was successfully created."
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.prepend("products", partial: "product", locals: { product: @product }),
+          turbo_stream.update("new_product", "")
+        ]
       end
-    else
-      render :new, status: :unprocessable_entity
+      format.html { redirect_to @product }
     end
+  else
+    render :new, status: :unprocessable_entity
   end
+ end
 
   def edit
   end
@@ -74,6 +83,20 @@ class ProductsController < ApplicationController
     end
   end
 
+  def close_edit
+  @product = Product.find(params[:id])
+  respond_to do |format|
+    format.turbo_stream {
+      render turbo_stream: turbo_stream.replace(
+        dom_id(@product),
+        partial: "products/product",
+        locals: { product: @product }
+      )
+    }
+    format.html { redirect_to @product }
+  end
+end
+
   private
 
   def set_product
@@ -87,7 +110,6 @@ class ProductsController < ApplicationController
     number_to_currency(price, unit: "KES")
   end
 
-
   def product_params
     params.require(:product).permit(
       :name,
@@ -98,7 +120,6 @@ class ProductsController < ApplicationController
       :sku
     )
   end
-
   def stock_status_label(product)
     if product.quantity.zero?
       'Out of Stock'
@@ -108,7 +129,7 @@ class ProductsController < ApplicationController
       'In Stock'
     end
   end
-  
+
   def generate_csv(products)
     headers = ['Name', 'SKU', 'Description', 'Price', 'Quantity', 'Low Stock Threshold', 'Status', 'Created At']
 

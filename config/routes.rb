@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :products do
+    member do
+     get :close_edit
+    end
     collection do
       get :export
     end
