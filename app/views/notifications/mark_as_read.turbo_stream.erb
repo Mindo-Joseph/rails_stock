@@ -1,0 +1,9 @@
+<%= turbo_stream.replace dom_id(@notification) do %>
+  <%= render partial: "shared/notification", locals: { notification: @notification } %>
+<% end %>
+
+<%= turbo_stream.replace "notification_count" do %>
+  <% if Notification.unread.exists? %>
+    <%= render "shared/notification_count", count: Notification.unread.count %>
+  <% end %>
+<% end %>

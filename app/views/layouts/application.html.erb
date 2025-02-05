@@ -1,16 +1,44 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>RailsStock</title>
+    <title>Inventory Management</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-100">
+    <div id="flash-messages"></div>
+    <div class="min-h-screen">
+      <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div class="flex justify-between items-center">
+            <%= link_to root_path, class: "flex items-center space-x-2 text-gray-900 hover:text-gray-700" do %>
+              <i class="fas fa-home"></i>
+              <span class="font-semibold">Home</span>
+            <% end %>
+
+            <% unless current_page?(root_path) %>
+              <%= link_to :back, class: "flex items-center space-x-2 text-gray-600 hover:text-gray-900" do %>
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </nav>
+
+      <%= render "shared/notification_bell" %>
+      <div class="py-10">
+        <main>
+          <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <%= yield %>
+          </div>
+        </main>
+      </div>
+    </div>
   </body>
 </html>

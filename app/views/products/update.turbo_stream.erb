@@ -1,0 +1,7 @@
+<%= turbo_stream.append "flash-messages" do %>
+  <%= render "shared/flash_message", type: "notice", message: "Product was successfully updated." %>
+<% end %>
+
+<%= turbo_stream.replace @product do %>
+  <%= render @product %>
+<% end %>

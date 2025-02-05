@@ -1,0 +1,102 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <%# Header Section %>
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Inventory Management</h1>
+    <%= link_to new_product_path,
+        class: "inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm",
+        data: { turbo_frame: "new_product" } do %>
+      <i class="fas fa-plus mr-2"></i>
+      Add New Product
+    <% end %>
+  </div>
+
+  <%# Search and Filter Section %>
+  <div class="mb-6">
+    <%= form_with(url: products_path, method: :get, data: { turbo_frame: "products", turbo_action: "advance" },
+                  class: "flex flex-col sm:flex-row gap-4") do |f| %>
+      <div class="flex-1">
+        <%= f.text_field :query,
+            value: params[:query],
+            placeholder: "Search by name or SKU...",
+            class: "w-full rounded-lg border-gray-300" %>
+      </div>
+
+      <div class="sm:w-48">
+        <%= f.select :status,
+            options_for_select([
+              ['All Status', ''],
+              ['In Stock', 'in_stock'],
+              ['Low Stock', 'low_stock'],
+              ['Out of Stock', 'out_of_stock']
+            ], params[:status]),
+            {},
+            class: "w-full rounded-lg border-gray-300" %>
+      </div>
+
+      <%= f.submit "Search", class: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
+    <% end %>
+  </div>
+
+  <%# Export Section %>
+  <div class="mb-6 flex justify-end space-x-4">
+    <div class="flex items-center text-sm text-gray-600">
+      Export as:
+      <%= link_to export_products_path(format: :csv),
+          class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
+        <i class="fas fa-file-csv mr-2"></i> CSV
+      <% end %>
+
+      <%= link_to export_products_path(format: :xlsx),
+          class: "ml-2 px-3 py-2 bg-white text-gray-700 hover:text-gray-900 border rounded-lg inline-flex items-center" do %>
+        <i class="fas fa-file-excel mr-2"></i> Excel
+      <% end %>
+    </div>
+  </div>
+
+  <div class="w-full flex flex-wrap gap-6">
+    <%# New Product Form Frame %>
+    <%= turbo_frame_tag "new_product", class: "w-full" %>
+
+    <%# Products List Frame %>
+    <%= turbo_frame_tag "products", class: "flex flex-wrap gap-6 flex-1" do %>
+      <% if @products.any? %>
+        <%= render @products %>
+      <% else %>
+        <div class="w-full text-center py-12">
+          <div class="text-gray-400">
+            <i class="fas fa-box fa-3x mb-4"></i>
+            <% if params[:query].present? || params[:status].present? %>
+              <p class="text-xl">No products found matching your criteria</p>
+              <%= link_to "Clear filters", products_path, class: "text-blue-600 hover:text-blue-800 text-sm mt-2" %>
+            <% else %>
+              <p class="text-xl">No products found</p>
+              <p class="text-sm mt-2">Start by adding some products to your inventory</p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%# Stats Section %>
+  <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm font-medium text-gray-500">Total Products</h3>
+      <p class="mt-1 text-2xl font-semibold text-gray-900"><%= @products.count %></p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm font-medium text-gray-500">Low Stock Items</h3>
+      <p class="mt-1 text-2xl font-semibold text-yellow-600">
+        <%= @products.select(&:low_stock?).count %>
+      </p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-4">
+      <h3 class="text-sm font-medium text-gray-500">Out of Stock</h3>
+      <p class="mt-1 text-2xl font-semibold text-red-600">
+        <%= @products.select(&:out_of_stock?).count %>
+      </p>
+    </div>
+  </div>
+</div>

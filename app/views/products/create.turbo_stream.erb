@@ -1,0 +1,9 @@
+<%= turbo_stream.append "flash-messages" do %>
+  <%= render "shared/flash_message", type: "notice", message: "Product was successfully created." %>
+<% end %>
+
+<%= turbo_stream.prepend "products" do %>
+  <%= render @product %>
+<% end %>
+
+<%= turbo_stream.update "new_product", "" %>

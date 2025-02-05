@@ -1,0 +1,5 @@
+<%= turbo_stream.append "flash-messages" do %>
+  <%= render "shared/flash_message", type: "notice", message: "Product was successfully deleted." %>
+<% end %>
+
+<%= turbo_stream.remove @product %>
