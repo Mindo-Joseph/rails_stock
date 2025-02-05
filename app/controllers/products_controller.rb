@@ -28,31 +28,31 @@ end
   @product = Product.new(product_params)
 
   if @product.save
-    flash[:notice] = "Product was successfully created."
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
+          turbo_stream.append("flash-messages", partial: "shared/flash_message", locals: { type: "notice", message: "Product was successfully created." }),
           turbo_stream.prepend("products", partial: "product", locals: { product: @product }),
           turbo_stream.update("new_product", "")
         ]
       end
-      format.html { redirect_to @product }
+      format.html { redirect_to @product, notice: "Product was successfully created." }
     end
   else
     render :new, status: :unprocessable_entity
   end
- end
+end
 
   def edit
   end
 
-  def update
+ def update
   original_quantity = @product.quantity
   if @product.update(product_params)
-    flash[:notice] = "Product was successfully updated."
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
+          turbo_stream.append("flash-messages", partial: "shared/flash_message", locals: { type: "notice", message: "Product was successfully updated." }),
           turbo_stream.replace(@product),
           turbo_stream.replace("notification_count",
             partial: "shared/notification_count",
@@ -60,7 +60,7 @@ end
           )
         ]
       end
-      format.html { redirect_to @product }
+      format.html { redirect_to @product, notice: "Product was successfully updated." }
     end
   else
     render :edit, status: :unprocessable_entity
@@ -68,12 +68,17 @@ end
 end
 
   def destroy
-    @product.destroy
-    respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.remove(@product) }
-      format.html { redirect_to products_url, notice: "Product was successfully deleted." }
+  @product.destroy
+  respond_to do |format|
+    format.turbo_stream do
+      render turbo_stream: [
+        turbo_stream.append("flash-messages", partial: "shared/flash_message", locals: { type: "notice", message: "Product was successfully deleted." }),
+        turbo_stream.remove(@product)
+      ]
     end
+    format.html { redirect_to products_url, notice: "Product was successfully deleted." }
   end
+end
 
   def export
     @products = Product.order(created_at: :desc)

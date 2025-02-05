@@ -1,0 +1,19 @@
+<div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+     data-controller="flash"
+     style="transition: all 150ms ease-in-out;">
+  <div class="<%= type == 'notice' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' %> px-4 py-3 rounded-lg shadow-md relative min-w-[300px]">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <% if type == 'notice' %>
+          <i class="fas fa-check-circle"></i>
+        <% else %>
+          <i class="fas fa-exclamation-circle"></i>
+        <% end %>
+        <p class="text-sm font-medium"><%= message %></p>
+      </div>
+      <button data-action="flash#close" class="ml-4 text-gray-400 hover:text-gray-600 focus:outline-none">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

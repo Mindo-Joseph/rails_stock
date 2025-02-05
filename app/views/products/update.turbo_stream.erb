@@ -1,9 +1,7 @@
-<%= turbo_stream.replace dom_id(@product) do %>
-  <%= render @product %>
+<%= turbo_stream.append "flash-messages" do %>
+  <%= render "shared/flash_message", type: "notice", message: "Product was successfully updated." %>
 <% end %>
 
-<% if Notification.unread.exists? %>
-  <%= turbo_stream.replace "notification_count" do %>
-    <%= render "shared/notification_count", count: Notification.unread.count %>
-  <% end %>
+<%= turbo_stream.replace @product do %>
+  <%= render @product %>
 <% end %>
