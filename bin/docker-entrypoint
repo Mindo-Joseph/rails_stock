@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Remove a potentially pre-existing server.pid for Rails
+rm -f /Users/joe/Desktop/rails_stock/tmp/pids/server.pid
+
+# Run the main process
+exec "$@"
